@@ -1,14 +1,41 @@
 import React, { Component } from "react";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+  } from "react-router-dom";
+
 
 class TodoApp extends Component {
   render() {
     return (
       <div className="TodoApp">
-        <LoginComponent />
-        this is running
+
+<Router>
+                    <>
+                        <Switch>
+                            <Route path="/" exact component={LoginComponent}/>
+                            <Route path="/login" component={LoginComponent}/>
+                            <Route path="/welcome/:name" component={WelcomeComponent}/>
+                            {/* <Route path="/todos" component={ListTodosComponent}/> */}
+                            {/* <Route component={ErrorComponent}/> */}
+                        </Switch>
+                    </>
+                </Router>
+        {/* <LoginComponent />
+        this is running */}
       </div>
     );
   }
+}
+
+class WelcomeComponent extends Component {
+    render() {
+        return <div>
+                    Welcome {this.props.match.params.name}. You can manage your todos <Link to="/todos">here</Link>.
+                </div>
+    }
 }
 
 class LoginComponent extends Component {
@@ -19,10 +46,10 @@ class LoginComponent extends Component {
       username: "irisTech",
       password: "",
       hasLoginFailed: false,
-     showSuccessMessage: false
+      showSuccessMessage: false,
     };
-    this.handleChange = this.handleChange.bind(this)
-    this.loginClicked = this.loginClicked.bind(this)
+    this.handleChange = this.handleChange.bind(this);
+    this.loginClicked = this.loginClicked.bind(this);
   }
 
   //   handleUsernameChange(event) {
@@ -33,21 +60,31 @@ class LoginComponent extends Component {
 
   handleChange(event) {
     //console.log(this.state);
-    this.setState(
-        {
-            [event.target.name]
-              :event.target.value
-        }
-    )
-}
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
+  }
 
   loginClicked() {
-    console.log(this.state);
+    //in28minutes,dummy
+    if (
+      this.state.username === "in28minutes" &&
+      this.state.password === "dummy"
+    ) {
+      this.props.history.push(`/welcome/${this.state.username}`)
+     // this.setState({ showSuccessMessage: true });
+      //this.setState({ hasLoginFailed: false });
+    } else {
+      this.setState({ showSuccessMessage: false });
+      this.setState({ hasLoginFailed: true });
+    }
   }
 
   render() {
     return (
       <div>
+        {this.state.hasLoginFailed && <div>Invalid Credentials</div>}
+        {this.state.showSuccessMessage && <div>Login Sucessful</div>}
         Username:
         <input
           type="text"
